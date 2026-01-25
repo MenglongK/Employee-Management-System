@@ -1,3 +1,4 @@
+import config.DatabaseConfig;
 import util.InputUtil;
 import view.View;
 
@@ -5,41 +6,41 @@ import java.util.Scanner;
 
 public class EmployeeDemo {
     static void main(String[] args) {
+        DatabaseConfig.init();
         do {
             View.printMenu();
             System.out.print("Enter Option: ");
-
             try {
                 int option = Integer.parseInt(InputUtil.scanner.nextLine());
-                switch (option){
-                    case 1->{
+                switch (option) {
+                    case 1 -> {
                         View.printHeader("Add New Employee");
                     }
-                    case 2->{
+                    case 2 -> {
                         View.printHeader("Update Employee By ID");
                     }
-                    case 3->{
+                    case 3 -> {
                         View.printHeader("Delete Employee By ID");
                     }
-                    case 4->{
-                        View.printHeader("Search Employee");
+                    case 4 -> {
+                        View.printSearchMenu();
                     }
-                    case 5->{
+                    case 5 -> {
                         View.printHeader("List All Employees");
                     }
-                    case 6->{
+                    case 6 -> {
                         View.printHeader("Employee Report");
                     }
-                    case 0-> {
+                    case 0 -> {
                         System.out.println("Exit the program...!");
                         System.exit(0);
                     }
-                    default ->  System.out.println("Invalid Option");
+                    default -> System.out.println("Invalid Option");
                 }
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Option Must be Number");
             }
 
-        }while (true);
+        } while (true);
     }
 }
