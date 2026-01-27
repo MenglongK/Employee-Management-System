@@ -8,15 +8,21 @@ import java.util.List;
 public interface EmployeeService {
     void addEmployee(Employee employee);
 
-    void updateEmployeeById(String emp_id, Employee employee);
+    void updateEmployeeById(Employee employee);
 
-    void deleteEmployeeById(Employee employee);
+    void deleteEmployeeById(int emp_id);
 
-    List<Employee> getAllEmployees();
+    List<Employee> getAllEmployees(int page, int pageSize);
 
-    void searchEmployeeByPosition(String position);
+    List<Employee> searchEmployeeByPosition(String position);
 
-    void searchEmployeeBySalary(BigDecimal salary);
+    List<Employee> searchEmployeeBySalary(BigDecimal salary);
 
-    void searchEmployeeByHireDate(String hire_date);
+    List<Employee> searchEmployeeByHireDate(String hire_date);
+
+    List<Employee> topSalaryEmployees(int page, int pageSize);
+
+    void KPIByAge();
+
+    void KPIByHireDate();
 }

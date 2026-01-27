@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 public class Employee {
-    private String emp_id;
+    private int emp_id;
     private String first_name;
     private String last_name;
     private String gender;

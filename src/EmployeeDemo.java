@@ -1,12 +1,16 @@
 import config.DatabaseConfig;
+import service.EmployeeService;
+import service.EmployeeServiceImpl;
 import util.InputUtil;
 import view.View;
 
 import java.util.Scanner;
 
 public class EmployeeDemo {
+
     static void main(String[] args) {
         DatabaseConfig.init();
+
         do {
             View.printMenu();
             System.out.print("Enter Option: ");
@@ -15,6 +19,7 @@ public class EmployeeDemo {
                 switch (option) {
                     case 1 -> {
                         View.printHeader("Add New Employee");
+                        View.add();
                     }
                     case 2 -> {
                         View.printHeader("Update Employee By ID");
@@ -27,6 +32,7 @@ public class EmployeeDemo {
                     }
                     case 5 -> {
                         View.printHeader("List All Employees");
+
                     }
                     case 6 -> {
                         View.printHeader("Employee Report");
