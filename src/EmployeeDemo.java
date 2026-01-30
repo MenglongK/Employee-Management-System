@@ -1,10 +1,13 @@
 import config.DatabaseConfig;
+import model.Employee;
 import service.EmployeeService;
 import service.EmployeeServiceImpl;
 import util.InputUtil;
 import view.View;
 
-import java.util.Scanner;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeDemo {
 
@@ -19,20 +22,48 @@ public class EmployeeDemo {
                 switch (option) {
                     case 1 -> {
                         View.printHeader("Add New Employee");
-                        View.add();
+                        try {
+                            View.add();
+                            View.printHeader("Employee Added Successfully");
+                        } catch (RuntimeException e) {
+                            View.printHeader(e.getMessage());
+                        }
                     }
                     case 2 -> {
                         View.printHeader("Update Employee By ID");
+                        try {
+                            View.printText("Enter Employee ID: ", false);
+                            int id = Integer.parseInt(InputUtil.scanner.nextLine());
+                            Employee employee = new Employee();
+                            EmployeeService employeeService = new EmployeeServiceImpl();
+                            employeeService.updateEmployeeById(employee);
+                        } catch (RuntimeException e) {
+                            View.printHeader(e.getMessage());
+                        }
                     }
                     case 3 -> {
                         View.printHeader("Delete Employee By ID");
+                        try {
+                            View.printText("Enter Employee ID: ", false);
+                            int id = Integer.parseInt(InputUtil.scanner.nextLine());
+                            EmployeeService service = new EmployeeServiceImpl();
+                            service.deleteEmployeeById(id);
+                            View.printHeader("Employee Deleted Successfully");
+                        } catch (RuntimeException e) {
+                            View.printHeader(e.getMessage());
+                        }
                     }
                     case 4 -> {
                         View.printSearchMenu();
                     }
                     case 5 -> {
                         View.printHeader("List All Employees");
-
+                        try {
+                            List<Employee> employees = EmployeeServiceImpl.employeeService.getAllEmployees();
+                            View.listAllEmployees(employees);
+                        } catch (RuntimeException e) {
+                            View.printHeader(e.getMessage());
+                        }
                     }
                     case 6 -> {
                         View.printHeader("Employee Report");

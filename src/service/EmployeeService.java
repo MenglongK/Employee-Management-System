@@ -4,15 +4,18 @@ import model.Employee;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeService {
     void addEmployee(Employee employee);
 
     void updateEmployeeById(Employee employee);
 
+    Optional<Employee> findById(int empId);
+
     void deleteEmployeeById(int emp_id);
 
-    List<Employee> getAllEmployees(int page, int pageSize);
+    List<Employee> getAllEmployees();
 
     List<Employee> searchEmployeeByPosition(String position);
 
