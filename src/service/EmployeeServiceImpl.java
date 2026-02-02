@@ -21,9 +21,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void addEmployee(Employee employee) {
         try {
             int affectedRow = employeeDao.addEmployee(employee);
-            if (affectedRow < 1) {
-                View.printHeader("Insert Employee Failed");
-            }
+            if (affectedRow < 1) View.printHeader("Insert Employee Failed");
+            else View.printHeader("Employee Added Successfully");
+
         } catch (SQLException e) {
             View.printHeader(e.getMessage());
         }
@@ -32,39 +32,43 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updateEmployeeById(int code, Employee employee) {
         try {
-            Employee foundEmployee = employeeDao.findById(code)
-                    .orElseThrow(() -> new RuntimeException("Employee Not Found"));
+
+            var opt = employeeDao.findById(code);
+
+            if (!opt.isPresent()) {
+                View.printHeader("Employee Not Found");
+            }
+//            Employee foundEmployee = employeeDao.findById(code).orElseThrow(() -> new RuntimeException("Employee Not Found"));
+
+            Employee foundEmployee = opt.get();
 
             // IMPORTANT: check NEW input (employee), not foundEmployee
             if (employee.getFirst_name() != null && !employee.getFirst_name().isBlank())
-                foundEmployee.setFirst_name(employee.getFirst_name());
+                foundEmployee.setFirst_name(employee.getFirst_name().trim());
 
             if (employee.getLast_name() != null && !employee.getLast_name().isBlank())
-                foundEmployee.setLast_name(employee.getLast_name());
+                foundEmployee.setLast_name(employee.getLast_name().trim());
 
             if (employee.getGender() != null && !employee.getGender().isBlank())
-                foundEmployee.setGender(employee.getGender());
+                foundEmployee.setGender(employee.getGender().trim());
 
-            if (employee.getDate_of_birth() != null)
-                foundEmployee.setDate_of_birth(employee.getDate_of_birth());
+            if (employee.getDate_of_birth() != null) foundEmployee.setDate_of_birth(employee.getDate_of_birth());
 
             if (employee.getEmail() != null && !employee.getEmail().isBlank())
-                foundEmployee.setEmail(employee.getEmail());
+                foundEmployee.setEmail(employee.getEmail().trim());
 
             if (employee.getPhone_number() != null && !employee.getPhone_number().isBlank())
-                foundEmployee.setPhone_number(employee.getPhone_number());
+                foundEmployee.setPhone_number(employee.getPhone_number().trim());
 
             if (employee.getPosition() != null && !employee.getPosition().isBlank())
-                foundEmployee.setPosition(employee.getPosition());
+                foundEmployee.setPosition(employee.getPosition().trim());
 
             if (employee.getSalary() != null && employee.getSalary().compareTo(BigDecimal.ZERO) > 0)
                 foundEmployee.setSalary(employee.getSalary());
 
-            if (employee.getHire_date() != null)
-                foundEmployee.setHire_date(employee.getHire_date());
+            if (employee.getHire_date() != null) foundEmployee.setHire_date(employee.getHire_date());
 
-            if (employee.getStatus() != null)
-                foundEmployee.setStatus(employee.getStatus());
+            if (employee.getStatus() != null) foundEmployee.setStatus(employee.getStatus());
 
             int affectedRow = employeeDao.updateEmployee(code, foundEmployee);
             if (affectedRow < 1) View.printHeader("Update Employee Failed");
@@ -131,6 +135,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             if (employeeDao.findById(emp_id).isEmpty()) {
                 View.printHeader("Employee Not Found");
+                return;
+            }
+            if (employeeDao.findById(emp_id).get().getStatus() == false){
+                View.printHeader("Employee Already Deleted");
                 return;
             }
 

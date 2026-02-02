@@ -159,13 +159,16 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public void deleteEmployee(int emp_id) {
         String sql = """
-                        DELETE FROM employee  WHERE emp_id = ?;
+                        UPDATE employee 
+                        SET status = ?
+                        WHERE emp_id = ?
                 """;
         Connection connection = DatabaseConfig.getConnection();
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, emp_id);
+            ps.setBoolean(1, false);
+            ps.setInt(2, emp_id);
             ps.executeUpdate();
         } catch (SQLException e) {
             View.printHeader(e.getMessage());
