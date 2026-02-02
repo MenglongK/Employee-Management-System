@@ -24,7 +24,6 @@ public class EmployeeDemo {
                         View.printHeader("Add New Employee");
                         try {
                             View.addEmployee();
-                            View.printHeader("Employee Added Successfully");
                         } catch (RuntimeException e) {
                             View.printHeader(e.getMessage());
                         }
