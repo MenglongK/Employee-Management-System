@@ -124,7 +124,23 @@ public class View {
 
 
     public static void updateEmployee() {
-        Integer code = Integer.valueOf(InputUtil.inputEmpIdRequired("Enter Employee ID: "));
+        Employee employee = new Employee();
+        EmployeeService employeeService = EmployeeServiceImpl.employeeService;
+        Integer code;
+        while (true) {
+            code = Integer.valueOf(InputUtil.inputEmpIdRequired("Enter Employee ID: "));
+
+            try{
+                if(!employeeService.findById(code).isPresent()){
+                    View.printHeader("Employee Not Found");
+                    continue;
+                }break;
+
+            }catch (Exception e){
+                View.printHeader(e.getMessage());
+            }
+        }
+
         String firstName = InputUtil.inputNameOptional("Enter Employee First Name: ", 2, 20);
         String lastName = InputUtil.inputNameOptional("Enter Employee Last Name: ", 2, 10);
         String gender = InputUtil.inputGenderOptional("Enter Employee Gender (m/male | f/female): ");
@@ -135,8 +151,6 @@ public class View {
         String salary = String.valueOf(InputUtil.inputSalaryOptional("Enter Employee Salary: "));
         String hire_date = String.valueOf(InputUtil.inputHireDateOptional("Enter Employee Hire Date (yyyy-mm-dd): "));
         String status = String.valueOf(InputUtil.inputStatusOptional("Enter Employee Status (a/active | i/inactive): "));
-
-        Employee employee = new Employee();
 
         employee.setFirst_name(firstName);
         employee.setLast_name(lastName);
@@ -150,9 +164,7 @@ public class View {
         employee.setStatus(Boolean.valueOf(status));
 
         try {
-            EmployeeService employeeService = new EmployeeServiceImpl();
             employeeService.updateEmployeeById(code, employee);
-
         } catch (NumberFormatException exception) {
             View.printHeader("Invalid Employee ID");
             View.printHeader(exception.getMessage());

@@ -1,5 +1,8 @@
 package util;
 
+import model.Employee;
+import view.View;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,13 +24,17 @@ public class InputUtil {
     public static int inputEmpIdRequired(String label) {
         while (true) {
             String s = getText(label);
-            if (!s.matches("\\d+")) {
-                System.out.println("Invalid ID. Numbers only.");
+            if (s.length() == 0) {
+                View.printHeader("Employee ID is Required");
+                continue;
+            }
+            if (!s.matches("-?\\d+")) {
+                View.printHeader("ID must be a number");
                 continue;
             }
             int id = Integer.parseInt(s);
             if (id <= 0) {
-                System.out.println("Invalid ID. Must be > 0.");
+                View.printHeader("Invalid ID. Must be greater than ZERO");
                 continue;
             }
             return id;
@@ -194,9 +201,9 @@ public class InputUtil {
             if (s.isBlank()) return null;
 
             s = s.toLowerCase();
-            if (s.equals("true") || s.equals("1") || s.equals("y") || s.equals("yes") || s.equals("active"))
+            if (s.equals("a") || s.equals("active"))
                 return true;
-            if (s.equals("false") || s.equals("0") || s.equals("n") || s.equals("no") || s.equals("inactive"))
+            if (s.equals("i") || s.equals("inactive"))
                 return false;
 
             System.out.println("Invalid status. Use true/false, 1/0, active/inactive, y/n.");
