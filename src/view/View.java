@@ -75,45 +75,18 @@ public class View {
         printText(table.render(), true);
     }
 
-    public static void add() {
+    public static void addEmployee() {
         Employee e = new Employee();
-        System.out.print("Enter Employee First Name: ");
-        e.setFirst_name(InputUtil.scanner.nextLine());
-        System.out.print("Enter Employee Last Name: ");
-        e.setLast_name(InputUtil.scanner.nextLine());
-        System.out.print("Enter Employee Gender: ");
-        e.setGender(InputUtil.scanner.nextLine());
-        System.out.print("Enter Employee Date of Birth (yyyy-mm-dd): ");
-        try {
-            e.setDate_of_birth(LocalDate.parse(InputUtil.scanner.nextLine()));
-        } catch (RuntimeException exception) {
-            View.printHeader(exception.getMessage());
-        }
-        System.out.print("Enter Employee Email: ");
-        e.setEmail(InputUtil.scanner.nextLine());
-        System.out.print("Enter Employee Phone number: ");
-        e.setPhone_number(InputUtil.scanner.nextLine());
-        System.out.print("Enter Employee Position: ");
-        e.setPosition(InputUtil.scanner.nextLine());
-        System.out.print("Enter Employee Salary: ");
-        try {
-            BigDecimal salary = new BigDecimal(InputUtil.scanner.nextLine());
-            e.setSalary(salary);
-        } catch (RuntimeException exception) {
-            View.printHeader(exception.getMessage());
-        }
-        System.out.print("Enter Employee Hire Date (yyyy-mm-dd): ");
-        try {
-            e.setHire_date(LocalDate.parse(InputUtil.scanner.nextLine()));
-        } catch (RuntimeException exception) {
-            View.printHeader(exception.getMessage());
-        }
-        System.out.print("Enter Employee Status (true/false): ");
-        try {
-            e.setStatus(Boolean.valueOf(InputUtil.scanner.nextLine()));
-        } catch (RuntimeException exception) {
-            View.printHeader(exception.getMessage());
-        }
+        e.setFirst_name(InputUtil.requiredName("Enter Employee First Name: ", 2, 20));
+        e.setLast_name(InputUtil.requiredName("Enter Employee Last Name: ", 2, 10));
+        e.setGender(InputUtil.requiredGender("Enter Employee Gender (m/male | f/female): "));
+        e.setDate_of_birth(InputUtil.requiredDob("Enter Employee Date of Birth (yyyy-mm-dd): "));
+        e.setEmail(InputUtil.requiredEmail("Enter Employee Email: "));
+        e.setPhone_number(InputUtil.requiredPhone("Enter Employee Phone Number: "));
+        e.setPosition(InputUtil.requiredPosition("Enter Employee Position: "));
+        e.setSalary(InputUtil.requiredSalary("Enter Employee Salary: "));
+        e.setHire_date(InputUtil.requiredHireDate("Enter Employee Hire Date (yyyy-mm-dd): "));
+        e.setStatus(InputUtil.requiredStatus("Enter Employee Status (a/active | i/inactive): "));
 
         EmployeeServiceImpl.employeeService.addEmployee(e);
     }
@@ -149,52 +122,41 @@ public class View {
         printText(table.render(), true);
     }
 
+
     public static void updateEmployee() {
+        Integer code = Integer.valueOf(InputUtil.inputEmpIdRequired("Enter Employee ID: "));
+        String firstName = InputUtil.inputNameOptional("Enter Employee First Name: ", 2, 20);
+        String lastName = InputUtil.inputNameOptional("Enter Employee Last Name: ", 2, 10);
+        String gender = InputUtil.inputGenderOptional("Enter Employee Gender (m/male | f/female): ");
+        String date_of_birth = String.valueOf(InputUtil.inputDobOptional("Enter Employee Date of Birth (yyyy-mm-dd): "));
+        String email = InputUtil.inputEmailOptional("Enter Employee Email: ");
+        String phone_number = InputUtil.inputPhoneOptional("Enter Employee Phone number: ");
+        String position = InputUtil.inputPositionOptional("Enter Employee Position: ");
+        String salary = String.valueOf(InputUtil.inputSalaryOptional("Enter Employee Salary: "));
+        String hire_date = String.valueOf(InputUtil.inputHireDateOptional("Enter Employee Hire Date (yyyy-mm-dd): "));
+        String status = String.valueOf(InputUtil.inputStatusOptional("Enter Employee Status (a/active | i/inactive): "));
 
-        EmployeeDao employeeDao = new EmployeeDaoImpl();
+        Employee employee = new Employee();
 
-        Employee e = new Employee();
-
-        System.out.print("Enter Employee ID to update: ");
-        e.setEmp_id(Integer.parseInt(InputUtil.scanner.nextLine()));
-
-        System.out.print("First Name: ");
-        e.setFirst_name(InputUtil.scanner.nextLine());
-
-        System.out.print("Last Name: ");
-        e.setLast_name(InputUtil.scanner.nextLine());
-
-        System.out.print("Gender: ");
-        e.setGender(InputUtil.scanner.nextLine());
-
-        System.out.print("Date of Birth (yyyy-mm-dd): ");
-        e.setDate_of_birth(LocalDate.parse(InputUtil.scanner.nextLine()));
-
-        System.out.print("Email: ");
-        e.setEmail(InputUtil.scanner.nextLine());
-
-        System.out.print("Phone: ");
-        e.setPhone_number(InputUtil.scanner.nextLine());
-
-        System.out.print("Position: ");
-        e.setPosition(InputUtil.scanner.nextLine());
-
-        System.out.print("Salary: ");
-        e.setSalary(BigDecimal.valueOf(Double.parseDouble(InputUtil.scanner.nextLine())));
-
-        System.out.print("Hired Date (yyyy-mm-dd): ");
-        e.setHire_date(LocalDate.parse(InputUtil.scanner.nextLine()));
-
-        System.out.print("Status: ");
-        e.setStatus(Boolean.valueOf(InputUtil.scanner.nextLine()));
+        employee.setFirst_name(firstName);
+        employee.setLast_name(lastName);
+        employee.setGender(gender);
+        employee.setDate_of_birth(LocalDate.parse(date_of_birth));
+        employee.setEmail(email);
+        employee.setPhone_number(phone_number);
+        employee.setPosition(position);
+        employee.setSalary(new BigDecimal(salary));
+        employee.setHire_date(LocalDate.parse(hire_date));
+        employee.setStatus(Boolean.valueOf(status));
 
         try {
-            employeeDao.updateEmployee(e);
-        } catch (SQLException ex) {
-            View.printHeader(ex.getMessage());
-        }
+            EmployeeService employeeService = new EmployeeServiceImpl();
+            employeeService.updateEmployeeById(code, employee);
 
-        System.out.println("✅ Employee updated successfully");
+        } catch (NumberFormatException exception) {
+            View.printHeader("Invalid Employee ID");
+            View.printHeader(exception.getMessage());
+        }
     }
 
 }

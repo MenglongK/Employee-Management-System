@@ -23,7 +23,7 @@ public class EmployeeDemo {
                     case 1 -> {
                         View.printHeader("Add New Employee");
                         try {
-                            View.add();
+                            View.addEmployee();
                             View.printHeader("Employee Added Successfully");
                         } catch (RuntimeException e) {
                             View.printHeader(e.getMessage());
@@ -31,15 +31,7 @@ public class EmployeeDemo {
                     }
                     case 2 -> {
                         View.printHeader("Update Employee By ID");
-                        try {
-                            View.printText("Enter Employee ID: ", false);
-                            int id = Integer.parseInt(InputUtil.scanner.nextLine());
-                            Employee employee = new Employee();
-                            EmployeeService employeeService = new EmployeeServiceImpl();
-                            employeeService.updateEmployeeById(employee);
-                        } catch (RuntimeException e) {
-                            View.printHeader(e.getMessage());
-                        }
+                        View.updateEmployee();
                     }
                     case 3 -> {
                         View.printHeader("Delete Employee By ID");
@@ -48,7 +40,6 @@ public class EmployeeDemo {
                             int id = Integer.parseInt(InputUtil.scanner.nextLine());
                             EmployeeService service = new EmployeeServiceImpl();
                             service.deleteEmployeeById(id);
-                            View.printHeader("Employee Deleted Successfully");
                         } catch (RuntimeException e) {
                             View.printHeader(e.getMessage());
                         }

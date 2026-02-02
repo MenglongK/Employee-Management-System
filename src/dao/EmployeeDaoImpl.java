@@ -39,43 +39,91 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public int updateEmployee(Employee employee) {
+    public int updateEmployee(int code, Employee employee) {
         String sql = """
-                    UPDATE employee
-                    SET first_name = ?,
-                    last_name = ?,
-                    gender = ?,
-                    date_of_birth = ?,
-                    email = ?,
-                    phone_number = ?,
-                    position = ?,
-                    salary = ?,
-                    hire_date = ?,
-                    status = ?
-                    WHERE emp_id = ?
-                """;
+        UPDATE employee
+        SET first_name = ?,
+            last_name = ?,
+            gender = ?,
+            date_of_birth = ?,
+            email = ?,
+            phone_number = ?,
+            position = ?,
+            salary = ?,
+            hire_date = ?,
+            status = ?
+        WHERE emp_id = ?;
+    """;
         Connection conn = DatabaseConfig.getConnection();
+
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, employee.getEmp_id());
-            ps.setString(2, employee.getFirst_name());
-            ps.setString(3, employee.getLast_name());
-            ps.setString(4, employee.getGender());
-            ps.setDate(5, Date.valueOf(employee.getDate_of_birth()));
-            ps.setString(6, employee.getEmail());
-            ps.setString(7, employee.getPhone_number());
-            ps.setString(8, employee.getPosition());
-            ps.setBigDecimal(9, employee.getSalary());
-            ps.setDate(10, Date.valueOf(employee.getHire_date()));
-            ps.setBoolean(11, employee.getStatus());
+            ps.setString(1, employee.getFirst_name());
+            ps.setString(2, employee.getLast_name());
+            ps.setString(3, employee.getGender());
 
-            ps.executeUpdate();
+            if (employee.getDate_of_birth() != null) ps.setDate(4, Date.valueOf(employee.getDate_of_birth()));
+            else ps.setNull(4, java.sql.Types.DATE);
 
+            ps.setString(5, employee.getEmail());
+            ps.setString(6, employee.getPhone_number());
+            ps.setString(7, employee.getPosition());
+
+            if (employee.getSalary() != null) ps.setBigDecimal(8, employee.getSalary());
+            else ps.setNull(8, java.sql.Types.NUMERIC);
+
+            if (employee.getHire_date() != null) ps.setDate(9, Date.valueOf(employee.getHire_date()));
+            else ps.setNull(9, java.sql.Types.DATE);
+
+            if (employee.getStatus() != null) ps.setBoolean(10, employee.getStatus());
+            else ps.setNull(10, java.sql.Types.BOOLEAN);
+
+            ps.setInt(11, code); // WHERE emp_id = ?
+
+            return ps.executeUpdate(); // return affected rows
         } catch (SQLException e) {
             View.printHeader(e.getMessage());
+            return 0;
         }
-        return 0;
     }
+
+//    public int updateEmployee(int code ,Employee employee) {
+//        String sql = """
+//                    UPDATE employee
+//                    SET first_name = ?,
+//                    last_name = ?,
+//                    gender = ?,
+//                    date_of_birth = ?,
+//                    email = ?,
+//                    phone_number = ?,
+//                    position = ?,
+//                    salary = ?,
+//                    hire_date = ?,
+//                    status = ?
+//                    WHERE emp_id = ?
+//                """;
+//        Connection conn = DatabaseConfig.getConnection();
+//        try {
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setInt(1, employee.getEmp_id());
+//            ps.setString(2, employee.getFirst_name());
+//            ps.setString(3, employee.getLast_name());
+//            ps.setString(4, employee.getGender());
+//            ps.setDate(5, Date.valueOf(employee.getDate_of_birth()));
+//            ps.setString(6, employee.getEmail());
+//            ps.setString(7, employee.getPhone_number());
+//            ps.setString(8, employee.getPosition());
+//            ps.setBigDecimal(9, employee.getSalary());
+//            ps.setDate(10, Date.valueOf(employee.getHire_date()));
+//            ps.setBoolean(11, employee.getStatus());
+//
+//            ps.executeUpdate();
+//
+//        } catch (SQLException e) {
+//            View.printHeader(e.getMessage());
+//        }
+//        return 0;
+//    }
 
     @Override
     public Optional<Employee> findById(int emp_id) throws SQLException {
@@ -114,6 +162,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
                         DELETE FROM employee  WHERE emp_id = ?;
                 """;
         Connection connection = DatabaseConfig.getConnection();
+
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, emp_id);

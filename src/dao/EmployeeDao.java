@@ -11,7 +11,7 @@ public interface EmployeeDao {
     int addEmployee(Employee employee) throws SQLException;
 
     // update employee
-    int updateEmployee(Employee employee) throws SQLException;
+    int updateEmployee(int code ,Employee employee) throws SQLException;
 
     Optional<Employee> findById(int emp_id) throws SQLException;
 

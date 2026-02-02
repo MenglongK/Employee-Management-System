@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface EmployeeService {
     void addEmployee(Employee employee);
 
-    void updateEmployeeById(Employee employee);
+    void updateEmployeeById(int code ,Employee employee);
 
     Optional<Employee> findById(int empId);
 
