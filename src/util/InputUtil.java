@@ -1,6 +1,5 @@
 package util;
 
-import model.Employee;
 import view.View;
 
 import java.math.BigDecimal;
@@ -12,6 +11,11 @@ import java.util.Scanner;
 public class InputUtil {
     public static Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ISO_LOCAL_DATE; // yyyy-MM-dd
+
+    public static void pressEnter() {
+        System.out.print("⚡ Press ENTER to continue...");
+        scanner.nextLine();
+    }
 
     // ============== Optional Validation ================
     // ---------- BASIC ----------
@@ -80,9 +84,8 @@ public class InputUtil {
     // Must be in the past. (Optional)
     public static LocalDate inputDobOptional(String label) {
         while (true) {
-            String s = getText(label);
-            if (s.isBlank()) return null;
-
+            String s = getText(label).trim();
+            if (s.isEmpty()) return null;
             try {
                 LocalDate d = LocalDate.parse(s, DATE_FMT);
                 if (!d.isBefore(LocalDate.now())) {
