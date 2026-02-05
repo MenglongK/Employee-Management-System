@@ -3,6 +3,7 @@ package service;
 import model.Employee;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +22,13 @@ public interface EmployeeService {
 
     List<Employee> searchEmployeeBySalary(BigDecimal salary);
 
-    List<Employee> searchEmployeeByHireDate(String hire_date);
+    List<Employee> searchEmployeeByHireDate(LocalDate hire_date);
 
-    List<Employee> topSalaryEmployees(int page, int pageSize);
+    List<Employee> topSalaryEmployees();
 
-    void KPIByAge();
+    List<Employee> filterEmployeeByAge();
 
-    void KPIByHireDate();
+    List<Employee> KPIByAge();
+
+    List<Employee> KPIByHireDate();
 }

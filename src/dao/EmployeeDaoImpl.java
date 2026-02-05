@@ -4,6 +4,7 @@ import config.DatabaseConfig;
 import model.Employee;
 import view.View;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +42,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public int updateEmployee(int code, Employee employee) {
         String sql = """
-        UPDATE employee
-        SET first_name = ?,
-            last_name = ?,
-            gender = ?,
-            date_of_birth = ?,
-            email = ?,
-            phone_number = ?,
-            position = ?,
-            salary = ?,
-            hire_date = ?,
-            status = ?
-        WHERE emp_id = ?;
-    """;
+                    UPDATE employee
+                    SET first_name = ?,
+                        last_name = ?,
+                        gender = ?,
+                        date_of_birth = ?,
+                        email = ?,
+                        phone_number = ?,
+                        position = ?,
+                        salary = ?,
+                        hire_date = ?,
+                        status = ?
+                    WHERE emp_id = ?;
+                """;
         Connection conn = DatabaseConfig.getConnection();
 
         try {
@@ -69,7 +70,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
             ps.setString(6, employee.getPhone_number());
             ps.setString(7, employee.getPosition());
 
-            if (employee.getSalary() != null) ps.setBigDecimal(8, employee.getSalary());
+            if (employee.getSalary() != null && employee.getSalary().compareTo(BigDecimal.ZERO) > 0)
+                ps.setBigDecimal(8, employee.getSalary());
             else ps.setNull(8, java.sql.Types.NUMERIC);
 
             if (employee.getHire_date() != null) ps.setDate(9, Date.valueOf(employee.getHire_date()));
@@ -86,44 +88,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
             return 0;
         }
     }
-
-//    public int updateEmployee(int code ,Employee employee) {
-//        String sql = """
-//                    UPDATE employee
-//                    SET first_name = ?,
-//                    last_name = ?,
-//                    gender = ?,
-//                    date_of_birth = ?,
-//                    email = ?,
-//                    phone_number = ?,
-//                    position = ?,
-//                    salary = ?,
-//                    hire_date = ?,
-//                    status = ?
-//                    WHERE emp_id = ?
-//                """;
-//        Connection conn = DatabaseConfig.getConnection();
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            ps.setInt(1, employee.getEmp_id());
-//            ps.setString(2, employee.getFirst_name());
-//            ps.setString(3, employee.getLast_name());
-//            ps.setString(4, employee.getGender());
-//            ps.setDate(5, Date.valueOf(employee.getDate_of_birth()));
-//            ps.setString(6, employee.getEmail());
-//            ps.setString(7, employee.getPhone_number());
-//            ps.setString(8, employee.getPosition());
-//            ps.setBigDecimal(9, employee.getSalary());
-//            ps.setDate(10, Date.valueOf(employee.getHire_date()));
-//            ps.setBoolean(11, employee.getStatus());
-//
-//            ps.executeUpdate();
-//
-//        } catch (SQLException e) {
-//            View.printHeader(e.getMessage());
-//        }
-//        return 0;
-//    }
 
     @Override
     public Optional<Employee> findById(int emp_id) throws SQLException {
@@ -207,25 +171,5 @@ public class EmployeeDaoImpl implements EmployeeDao {
             throw new RuntimeException(e);
         }
         return list;
-    }
-
-    @Override
-    public List<Employee> searchEmployeeByPosition(String position, int page, int pageSize) {
-        return List.of();
-    }
-
-    @Override
-    public List<Employee> searchEmployeeBySalary(int salary, int page, int pageSize) {
-        return List.of();
-    }
-
-    @Override
-    public List<Employee> searchEmployeeByHireDate(String hire_date, int page, int pageSize) {
-        return List.of();
-    }
-
-    @Override
-    public List<Employee> topSalaryEmployees(int page, int pageSize) {
-        return List.of();
     }
 }

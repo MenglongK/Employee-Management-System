@@ -21,15 +21,4 @@ public interface EmployeeDao {
     // list all employee and show pagination
     List<Employee> getAllEmployees() throws SQLException;
 
-    // search employee by position, salary, hire_date
-    List<Employee> searchEmployeeByPosition(String position, int page, int pageSize) throws SQLException;
-    List<Employee> searchEmployeeBySalary(int salary, int page, int pageSize) throws SQLException;
-    List<Employee> searchEmployeeByHireDate(String hire_date, int page, int pageSize) throws SQLException;
-
-    // top salary
-    List<Employee> topSalaryEmployees(int page, int pageSize) throws SQLException;
-
-    // KPI by Age, hire_date
-
-
 }

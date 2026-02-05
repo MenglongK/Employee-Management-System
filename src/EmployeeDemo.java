@@ -43,9 +43,8 @@ public class EmployeeDemo {
                             View.printHeader(e.getMessage());
                         }
                     }
-                    case 4 -> {
-                        View.printSearchMenu();
-                    }
+                    case 4 -> View.printSearchMenuOption();
+
                     case 5 -> {
                         View.printHeader("List All Employees");
                         try {
@@ -55,9 +54,7 @@ public class EmployeeDemo {
                             View.printHeader(e.getMessage());
                         }
                     }
-                    case 6 -> {
-                        View.printHeader("Employee Report");
-                    }
+                    case 6 -> View.printEmployeeReportMenuOption();
                     case 0 -> {
                         System.out.println("Exit the program...!");
                         System.exit(0);
@@ -65,7 +62,7 @@ public class EmployeeDemo {
                     default -> System.out.println("Invalid Option");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Option Must be Number");
+                View.printHeader("Option Must be Number");
             }
 
         } while (true);

@@ -8,8 +8,12 @@ import view.View;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -37,8 +41,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             if (!opt.isPresent()) {
                 View.printHeader("Employee Not Found");
+                return;
             }
-//            Employee foundEmployee = employeeDao.findById(code).orElseThrow(() -> new RuntimeException("Employee Not Found"));
 
             Employee foundEmployee = opt.get();
 
@@ -79,36 +83,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-//    public void updateEmployeeById(int code, Employee employee) {
-//        try {
-//            Employee foundEmployee = employeeDao.findById(code).orElseThrow(() -> new RuntimeException("Employee Not Found"));
-//            if (!foundEmployee.getFirst_name().isBlank())
-//                foundEmployee.setFirst_name(employee.getFirst_name());
-//            if (!foundEmployee.getLast_name().isBlank())
-//                foundEmployee.setLast_name(employee.getLast_name());
-//            if (!foundEmployee.getGender().isBlank())
-//                foundEmployee.setGender(employee.getGender());
-//            if (foundEmployee.getDate_of_birth() != null)
-//                foundEmployee.setDate_of_birth(foundEmployee.getDate_of_birth());
-//            if (!foundEmployee.getEmail().isBlank())
-//                foundEmployee.setEmail(employee.getEmail());
-//            if (!foundEmployee.getPhone_number().isBlank())
-//                foundEmployee.setPhone_number(employee.getPhone_number());
-//            if (foundEmployee.getSalary() != null)
-//                foundEmployee.setSalary(foundEmployee.getSalary());
-//            if (foundEmployee.getDate_of_birth() != null)
-//                foundEmployee.setDate_of_birth(foundEmployee.getDate_of_birth());
-//            if (foundEmployee.getStatus() != null)
-//                foundEmployee.setStatus(foundEmployee.getStatus());
-//            int affectedRow = employeeDao.updateEmployee(code, foundEmployee);
-//            if (affectedRow < 1)
-//                View.printHeader("Update Employee Failed");
-//
-//        } catch (SQLException e) {
-//            View.printHeader(e.getMessage());
-//        }
-//    }
-
     @Override
     public Optional<Employee> findById(int empId) {
         try {
@@ -137,13 +111,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 View.printHeader("Employee Not Found");
                 return;
             }
-            if (employeeDao.findById(emp_id).get().getStatus() == false){
+            if (employeeDao.findById(emp_id).get().getStatus() == false) {
                 View.printHeader("Employee Already Deleted");
+                InputUtil.pressEnter();
                 return;
             }
 
             employeeDao.deleteEmployee(emp_id);
             View.printHeader("Delete Employee Success");
+            InputUtil.pressEnter();
         } catch (SQLException e) {
             View.printHeader(e.getMessage());
         }
@@ -161,31 +137,68 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> searchEmployeeByPosition(String position) {
-        return List.of();
+        List<Employee> employees = employeeService.getAllEmployees();
+        if (position == null || position.trim().isEmpty()) position = "";
+        position = position.trim();
+        String finalPosition = position;
+        return employees.stream().filter(p -> p.getPosition().toLowerCase().contains(finalPosition.toLowerCase())).toList();
     }
 
     @Override
     public List<Employee> searchEmployeeBySalary(BigDecimal salary) {
-        return List.of();
+        List<Employee> employees = employeeService.getAllEmployees();
+        if (salary == null) salary = BigDecimal.ZERO;
+
+        BigDecimal finalSalary = salary;
+        return employees.stream().filter(p -> p.getSalary().compareTo(finalSalary) == 0).toList();
     }
 
     @Override
-    public List<Employee> searchEmployeeByHireDate(String hire_date) {
-        return List.of();
+    public List<Employee> searchEmployeeByHireDate(LocalDate hire_date) {
+        List<Employee> employees = employeeService.getAllEmployees();
+        if (hire_date == null || hire_date.isAfter(LocalDate.now()))
+            View.printHeader("Hire Date Not Found. Hire Date must be before now.");
+
+        LocalDate finalHireDate = hire_date;
+        return employees.stream().filter(p -> p.getHire_date().compareTo(finalHireDate) == 0).toList();
     }
 
     @Override
-    public List<Employee> topSalaryEmployees(int page, int pageSize) {
-        return List.of();
+    public List<Employee> topSalaryEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return employees.stream()
+                .sorted(Comparator.comparing(Employee::getSalary).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void KPIByAge() {
-
+    public List<Employee> filterEmployeeByAge() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return employees.stream().sorted(Comparator.comparing(Employee::getDate_of_birth)).collect(Collectors.toList());
     }
 
     @Override
-    public void KPIByHireDate() {
+    public List<Employee> KPIByAge() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        for (Employee employee : employees) {
+            BigDecimal employeeSalary = employee.getSalary();
+            BigDecimal multiplyKPIByAge = employeeSalary.multiply(BigDecimal.valueOf(0.05));
+            BigDecimal multiplyKPIByHireDate = employeeSalary.multiply(BigDecimal.valueOf(0.05));
+            if (Period.between(employee.getDate_of_birth(), LocalDate.now()).getYears() >= 50 && Period.between(employee.getHire_date(), LocalDate.now()).getYears() > 10) {
+                employee.setSalary(employeeSalary.add(multiplyKPIByAge).add(multiplyKPIByHireDate));
+            } else if (Period.between(employee.getDate_of_birth(), LocalDate.now()).getYears() >= 50) {
+                employee.setSalary(employeeSalary.add(multiplyKPIByAge));
+            } else if (Period.between(employee.getHire_date(), LocalDate.now()).getYears() > 10) {
+                employee.setSalary(employeeSalary.add(multiplyKPIByHireDate));
+            }
+        }
+        return employees.stream().sorted(Comparator.comparing(Employee::getDate_of_birth)).collect(Collectors.toList());
+    }
 
+    @Override
+    public List<Employee> KPIByHireDate() {
+        List<Employee> employees = employeeService.KPIByAge();
+        return employees.stream().sorted(Comparator.comparing(Employee::getHire_date)).collect(Collectors.toList());
     }
 }
