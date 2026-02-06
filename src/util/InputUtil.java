@@ -1,5 +1,7 @@
 package util;
 
+import dao.EmployeeDao;
+import service.EmployeeServiceImpl;
 import view.View;
 
 import java.math.BigDecimal;
@@ -234,7 +236,7 @@ public class InputUtil {
         while (true) {
             String s = requiredText(label, min, max);
             if (!s.matches("^[A-Za-z]+([ '-][A-Za-z]+)*$")) {
-                System.out.println("Invalid name. Use letters, single spaces, ' or - only. " + min +"->" + max + ".");
+                System.out.println("Invalid name. Use letters, single spaces, ' or - only. " + min + "->" + max + ".");
                 continue;
             }
             return s;
@@ -296,7 +298,7 @@ public class InputUtil {
     public static String requiredPosition(String label) {
         while (true) {
             String s = requiredText(label, 2, 60);
-            if (!s.matches("^[A-Za-z]+([A-Za-z]+)*$")) {
+            if (!s.matches("^[A-Za-z]+( [A-Za-z]+)*$")) {
                 System.out.println("Invalid position. Use letters only (2->60 letters).");
                 continue;
             }
