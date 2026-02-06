@@ -119,12 +119,12 @@ public class View {
                 table.addCell(e.getFirst_name());
                 table.addCell(e.getLast_name());
                 table.addCell(e.getGender());
-                table.addCell(e.getDate_of_birth().toString() + " => " + Period.between(e.getDate_of_birth(), LocalDate.now()).getYears() + "years");
+                table.addCell(e.getDate_of_birth().toString() + " (" + Period.between(e.getDate_of_birth(), LocalDate.now()).getYears() + "years)");
                 table.addCell(e.getEmail());
                 table.addCell(e.getPhone_number());
                 table.addCell(e.getPosition());
                 table.addCell(e.getSalary().toString());
-                table.addCell(e.getHire_date().toString() + " => " + Period.between(e.getHire_date(), LocalDate.now()).getYears() + "years");
+                table.addCell(e.getHire_date().toString() + " (" + Period.between(e.getHire_date(), LocalDate.now()).getYears() + "years)");
                 table.addCell(e.getStatus().toString());
             }
             printText(table.render(), true);
@@ -157,7 +157,6 @@ public class View {
         InputUtil.pressEnter();
     }
 
-
     public static void updateEmployee() {
         Employee employee = new Employee();
         EmployeeService employeeService = EmployeeServiceImpl.employeeService;
@@ -184,7 +183,7 @@ public class View {
         String email = InputUtil.inputEmailOptional("Enter Employee Email: ");
         String phone_number = InputUtil.inputPhoneOptional("Enter Employee Phone number: ");
         String position = InputUtil.inputPositionOptional("Enter Employee Position: ");
-        String salary = String.valueOf(InputUtil.inputSalaryOptional("Enter Employee Salary: "));
+        BigDecimal salary = InputUtil.inputSalaryOptional("Enter Employee Salary: ");
         LocalDate hire_date = InputUtil.inputHireDateOptional("Enter Employee Hire Date (yyyy-mm-dd): ");
         Boolean status = InputUtil.inputStatusOptional("Enter Employee Status (a/active | i/inactive): ");
 
@@ -195,7 +194,7 @@ public class View {
         employee.setEmail(email);
         employee.setPhone_number(phone_number);
         employee.setPosition(position);
-        employee.setSalary(new BigDecimal(salary));
+        employee.setSalary(salary);
         employee.setHire_date(hire_date);
         employee.setStatus(status);
 
